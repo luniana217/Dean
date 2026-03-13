@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: local-disk-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:1.28
+    ports: 
+    - containerPort: 80
+    volumeMounts:
+    - mountPath: /usr/share/nginx/html
+      name: local-vol
+  volumes:
+   - name: local-vol
+     hostPath:
+       path: /run/desktop/mnt/host/d/class/study39/html #c드라이브 니까 c 전까진 무조건 고정
+       type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: volume-pod
+spec:
+  type: LoadBalancer #외부에서 접속할땐 이 스펙의 타입을 사용해야함
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: nginx
+
+
+initContainers:
+    - name: git-clone
+      image: alpine/git
+      command: ["git","clone","https://github.com/luniana217/InitContainer.git","/app"]
+      volumeMounts:
+        - name: local-vol
+          mountPath: /app

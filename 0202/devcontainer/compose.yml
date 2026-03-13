@@ -1,0 +1,9 @@
+services:
+  react:
+    image: node:24.13.0
+    container_name: react
+    ports:
+      - 80:5173
+    volumes:
+      - ../workspace:/workspace
+    command: ["sleep","infinity"]

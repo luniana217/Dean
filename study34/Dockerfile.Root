@@ -1,0 +1,19 @@
+FROM ubuntu:24.04
+
+#package 설치 시 사용자 유무 확인 무시
+ENV DEBIAN_FRONTEND=noninteractive
+
+#openssh-server 설치
+RUN apt update
+RUN apt install -y openssh-server sudo
+RUN mkdir /var/run/sshd
+
+#root 계정 접속 허용 (/etc/ssh/sshd_config 안의 내용을 sed -i 의 내용으로 바꾼다 '/' 앞의 내용은 위치, 뒤의 내용은 바꿀 내용)
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+#root 계정 비밀번호 설정
+RUN echo 'root:1234' | chpasswd
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

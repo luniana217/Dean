@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app1-config
+data:
+  APP1_PATH: "/app1"
+  APP2_PATH: "/app2"
+  APP1_URL: "http://app2-service:8000"
+  APP2_URL: "http://app3-service:8000"
+
+
+  #config 는 dockerfile 내용 가져오기
+
+
+  # kubectl create -f app1-config.yaml

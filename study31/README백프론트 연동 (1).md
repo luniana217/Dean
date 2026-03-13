@@ -1,0 +1,183 @@
+## FrontEnd `React`
+- 프로젝트 생성 (vite)
+
+```bash
+npm create vite .
+```
+
+- React-Router 설치
+
+```bash
+npm i react-router
+```
+
+- 비동기통신 `axios` 설치
+
+```bash
+npm i axios
+```
+
+- 스타일 프레임워크 `Bootstrap` 설치
+
+```bash
+npm i bootstrap bootstrap-icons
+```
+
+- React 기본 설정 `app.jsx`
+
+```js
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { BrowserRouter, Routes, Route } from "react-router";
+
+const Home = () => {
+  return (
+    <div className="text-center">
+      <h1>메인 화면입니다.</h1>
+    </div>
+  )
+}
+
+const NotFound = () => {
+  return (
+    <div className="text-center">
+      <h1>404</h1>
+      <p>페이지를 찾을 수 없습니다.</p>
+    </div>
+  )
+}
+
+const App = () => {
+  const paths = [
+    {path: "/", element: <Home />},
+    {path: "*", element: <NotFound />},
+  ]
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          { paths?.map((v, i) => <Route key={i} path={v.path} element={v.element} />) }
+        </Routes>
+      </BrowserRouter>
+    </>
+  )
+}
+
+export default App
+```
+
+- `vite.config.js` 설정
+
+```
+
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { fileURLToPath, URL } from 'url'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  // base: "/",
+  // server: {
+  //   host: true,
+  // },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
+      '@styles': fileURLToPath(new URL('./src/styles', import.meta.url)),
+      '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
+      '@hooks': fileURLToPath(new URL('./src/hooks', import.meta.url)),
+    }
+  }
+})
+```
+
+- React 실행 `Service Run` 개발모드
+
+```bash
+npm run dev
+```
+
+## BackEnd `FastAPI`
+- 프로젝트 생성 (uv)
+
+```bash
+uv init .
+```
+
+- FastAPI 설치
+
+```bash
+uv add fastapi --extra standard
+```
+
+- FastAPI 기본 설정 `main.py`
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+  return {"Hello": "World"}
+```
+
+- FastAPI 실행 `Service Run` 개발모드
+
+```bash
+uv run fastapi dev
+```
+- jose jwt 설치
+```
+uv add python-jose 
+```
+
+
+``` docker file 기본설정
+FROM python:3.13.11
+
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN pip install uv
+
+WORKDIR /workspace
+
+EXPOSE 8000
+
+
+from fastapi.middleware.cors import CORSMiddleware
+
+
+app = FastAPI(title="Producer")
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=origins,
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"],
+)
+
+
+
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { fileURLToPath, URL } from 'url'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  base: "/",
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    allowedHosts: ['localhost'],
+  },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    }
+  },
+})

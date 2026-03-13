@@ -1,0 +1,476 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 2800">
+  <defs>
+    <style>
+      .frontend { fill: #e3f2fd; stroke: #1976d2; stroke-width: 2; }
+      .backend { fill: #e8f5e9; stroke: #388e3c; stroke-width: 2; }
+      .database { fill: #fff3e0; stroke: #f57c00; stroke-width: 2; }
+      .decision { fill: #f3e5f5; stroke: #7b1fa2; stroke-width: 2; }
+      .comment { fill: #fff9c4; stroke: #f9a825; stroke-width: 2; }
+      .text { fill: #263238; font-family: 'Malgun Gothic', 'Consolas', Arial, sans-serif; font-size: 13px; text-anchor: middle; }
+      .small-text { fill: #546e7a; font-family: 'Malgun Gothic', 'Consolas', Arial, sans-serif; font-size: 11px; text-anchor: middle; }
+      .code-text { fill: #37474f; font-family: 'Consolas', 'Courier New', monospace; font-size: 10px; text-anchor: middle; }
+      .arrow { fill: none; stroke: #455a64; stroke-width: 2; marker-end: url(#arrowhead); }
+      .label { fill: #37474f; font-family: 'Malgun Gothic', Arial, sans-serif; font-size: 11px; font-weight: bold; }
+      .header { fill: #263238; font-family: 'Malgun Gothic', Arial, sans-serif; font-size: 16px; font-weight: bold; text-anchor: middle; }
+      .section-bg { fill: #fafafa; stroke: #bdbdbd; stroke-width: 1; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#455a64" />
+    </marker>
+  </defs>
+
+  <!-- 제목 -->
+  <text x="700" y="35" class="header" font-size="20px">게시판 시스템 전체 흐름도 (댓글 기능 포함)</text>
+  <text x="700" y="58" class="small-text">(Frontend - Backend - Database)</text>
+
+  <!-- 구역 배경 -->
+  <rect x="50" y="90" width="350" height="2650" rx="10" class="section-bg"/>
+  <rect x="450" y="90" width="400" height="2650" rx="10" class="section-bg"/>
+  <rect x="900" y="90" width="450" height="2650" rx="10" class="section-bg"/>
+
+  <!-- 헤더 -->
+  <text x="225" y="115" class="header">Frontend (React)</text>
+  <text x="650" y="115" class="header">Backend (FastAPI)</text>
+  <text x="1125" y="115" class="header">Database (MariaDB)</text>
+
+  <!-- ========== 1. 게시글 목록 조회 ========== -->
+  <text x="700" y="165" class="header" font-size="14px">1. 게시글 목록 조회</text>
+
+  <!-- Frontend -->
+  <rect x="80" y="190" width="290" height="60" rx="5" class="frontend"/>
+  <text x="225" y="210" class="text" font-weight="bold">목록 페이지 로드</text>
+  <text x="225" y="228" class="code-text">api.post("/board")</text>
+  <text x="225" y="243" class="small-text">페이징, 검색 params 전송</text>
+
+  <!-- Backend -->
+  <rect x="480" y="190" width="340" height="80" rx="5" class="backend"/>
+  <text x="650" y="210" class="text" font-weight="bold">POST /board</text>
+  <text x="650" y="228" class="small-text">페이징 파라미터 수신</text>
+  <text x="650" y="243" class="small-text">검색 조건 처리</text>
+  <text x="650" y="258" class="code-text">get_user() - 로그인 확인</text>
+
+  <!-- Database -->
+  <rect x="930" y="190" width="390" height="80" rx="5" class="database"/>
+  <text x="1125" y="210" class="text" font-weight="bold">SELECT 쿼리</text>
+  <text x="1125" y="228" class="code-text">SELECT * FROM board</text>
+  <text x="1125" y="243" class="code-text">JOIN user ON board.userNo</text>
+  <text x="1125" y="258" class="small-text">WHERE delYn=0 + 검색조건</text>
+
+  <path d="M 370 220 L 480 220" class="arrow"/>
+  <path d="M 820 220 L 930 220" class="arrow"/>
+  <path d="M 930 240 L 820 240" class="arrow"/>
+  <path d="M 820 240 L 370 240" class="arrow"/>
+
+  <text x="425" y="215" class="label">요청</text>
+  <text x="860" y="255" class="label">결과 반환</text>
+
+  <!-- ========== 2. 게시글 상세 조회 ========== -->
+  <text x="700" y="325" class="header" font-size="14px">2. 게시글 상세 조회</text>
+
+  <!-- Frontend -->
+  <rect x="80" y="350" width="290" height="70" rx="5" class="frontend"/>
+  <text x="225" y="370" class="text" font-weight="bold">게시글 클릭</text>
+  <text x="225" y="388" class="code-text">api.post(`/board/${no}`)</text>
+  <text x="225" y="403" class="small-text">게시글 번호 전송</text>
+
+  <!-- Backend -->
+  <rect x="480" y="350" width="340" height="100" rx="5" class="backend"/>
+  <text x="650" y="370" class="text" font-weight="bold">POST /board/{no}</text>
+  <text x="650" y="388" class="small-text">게시글 번호 수신</text>
+  <text x="650" y="403" class="code-text">get_user() - 토큰 검증</text>
+  <text x="650" y="418" class="small-text">권한 체크 로직</text>
+  <text x="650" y="433" class="code-text">role = (userNo == sub)</text>
+
+  <!-- Database -->
+  <rect x="930" y="350" width="390" height="80" rx="5" class="database"/>
+  <text x="1125" y="370" class="text" font-weight="bold">SELECT 쿼리</text>
+  <text x="1125" y="388" class="code-text">SELECT board.*, user.name</text>
+  <text x="1125" y="403" class="code-text">FROM board JOIN user</text>
+  <text x="1125" y="418" class="small-text">WHERE board.no = {no}</text>
+
+  <path d="M 370 385 L 480 385" class="arrow"/>
+  <path d="M 820 385 L 930 385" class="arrow"/>
+  <path d="M 930 405 L 820 405" class="arrow"/>
+  <path d="M 820 405 L 370 405" class="arrow"/>
+
+  <text x="425" y="380" class="label">요청</text>
+  <text x="860" y="420" class="label">데이터+권한</text>
+
+  <!-- Frontend 결과 -->
+  <rect x="80" y="470" width="290" height="60" rx="5" class="frontend"/>
+  <text x="225" y="490" class="text">화면 렌더링</text>
+  <text x="225" y="508" class="small-text">role=true → 수정/삭제 버튼</text>
+  <text x="225" y="523" class="small-text">role=false → 버튼 숨김</text>
+
+  <path d="M 225 420 L 225 470" class="arrow"/>
+
+  <!-- ========== 3. 게시글 작성 ========== -->
+  <text x="700" y="590" class="header" font-size="14px">3. 게시글 작성</text>
+
+  <!-- Frontend -->
+  <rect x="80" y="615" width="290" height="70" rx="5" class="frontend"/>
+  <text x="225" y="635" class="text" font-weight="bold">작성 폼 입력</text>
+  <text x="225" y="653" class="code-text">api.put("/board", params)</text>
+  <text x="225" y="668" class="small-text">{title, content}</text>
+
+  <!-- Backend -->
+  <rect x="480" y="615" width="340" height="100" rx="5" class="backend"/>
+  <text x="650" y="635" class="text" font-weight="bold">PUT /board</text>
+  <text x="650" y="653" class="small-text">BoardAddModel 검증</text>
+  <text x="650" y="668" class="code-text">get_user() - 작성자 확인</text>
+  <text x="650" y="683" class="code-text">add_key() - 새 ID 반환</text>
+  <text x="650" y="698" class="small-text">LAST_INSERT_ID()</text>
+
+  <!-- Database -->
+  <rect x="930" y="615" width="390" height="80" rx="5" class="database"/>
+  <text x="1125" y="635" class="text" font-weight="bold">INSERT 쿼리</text>
+  <text x="1125" y="653" class="code-text">INSERT INTO board</text>
+  <text x="1125" y="668" class="code-text">(title, content, userNo)</text>
+  <text x="1125" y="683" class="small-text">VALUES (...)</text>
+
+  <path d="M 370 650 L 480 650" class="arrow"/>
+  <path d="M 820 650 L 930 650" class="arrow"/>
+  <path d="M 930 670 L 820 670" class="arrow"/>
+  <path d="M 820 670 L 370 670" class="arrow"/>
+
+  <text x="425" y="645" class="label">등록</text>
+  <text x="860" y="685" class="label">새 글 번호</text>
+
+  <!-- Frontend 결과 -->
+  <rect x="80" y="735" width="290" height="50" rx="5" class="frontend"/>
+  <text x="225" y="755" class="text">성공 알림</text>
+  <text x="225" y="773" class="code-text">navigate(`/boardview/${id}`)</text>
+
+  <path d="M 225 685 L 225 735" class="arrow"/>
+
+  <!-- ========== 4. 게시글 수정 ========== -->
+  <text x="700" y="845" class="header" font-size="14px">4. 게시글 수정</text>
+
+  <!-- Frontend - 데이터 로드 -->
+  <rect x="80" y="870" width="290" height="60" rx="5" class="frontend"/>
+  <text x="225" y="890" class="text" font-weight="bold">수정 페이지 로드</text>
+  <text x="225" y="908" class="code-text">api.post(`/board/${no}`)</text>
+  <text x="225" y="923" class="small-text">기존 데이터 조회</text>
+
+  <path d="M 370 900 L 480 900" class="arrow"/>
+  <text x="425" y="895" class="label">조회</text>
+
+  <!-- Backend - 데이터 조회 -->
+  <rect x="480" y="870" width="340" height="60" rx="5" class="backend"/>
+  <text x="650" y="890" class="text">POST /board/{no}</text>
+  <text x="650" y="908" class="small-text">기존 데이터 반환</text>
+  <text x="650" y="923" class="code-text">권한 체크 포함</text>
+
+  <path d="M 820 900 L 930 900" class="arrow"/>
+  <path d="M 930 920 L 370 920" class="arrow"/>
+
+  <!-- Frontend - 수정 제출 -->
+  <rect x="80" y="960" width="290" height="60" rx="5" class="frontend"/>
+  <text x="225" y="980" class="text" font-weight="bold">수정 제출</text>
+  <text x="225" y="998" class="code-text">api.patch(`/board/${no}`)</text>
+  <text x="225" y="1013" class="small-text">{content}</text>
+
+  <path d="M 225 930 L 225 960" class="arrow"/>
+
+  <!-- Backend - 수정 처리 -->
+  <rect x="480" y="960" width="340" height="80" rx="5" class="backend"/>
+  <text x="650" y="980" class="text" font-weight="bold">PATCH /board/{no}</text>
+  <text x="650" y="998" class="small-text">수정할 내용 수신</text>
+  <text x="650" y="1013" class="code-text">get_user() - 권한 확인</text>
+  <text x="650" y="1028" class="small-text">BoardEditModel 검증</text>
+
+  <path d="M 370 995 L 480 995" class="arrow"/>
+
+  <!-- Database - 수정 -->
+  <rect x="930" y="960" width="390" height="70" rx="5" class="database"/>
+  <text x="1125" y="980" class="text" font-weight="bold">UPDATE 쿼리</text>
+  <text x="1125" y="998" class="code-text">UPDATE board</text>
+  <text x="1125" y="1013" class="code-text">SET content = ?, regDate = NOW()</text>
+  <text x="1125" y="1028" class="small-text">WHERE no = {no}</text>
+
+  <path d="M 820 995 L 930 995" class="arrow"/>
+  <path d="M 930 1015 L 820 1015" class="arrow"/>
+  <path d="M 820 1015 L 370 1015" class="arrow"/>
+
+  <text x="860" y="1030" class="label">수정 완료</text>
+
+  <!-- Frontend - 결과 -->
+  <rect x="80" y="1070" width="290" height="50" rx="5" class="frontend"/>
+  <text x="225" y="1090" class="text">성공 알림</text>
+  <text x="225" y="1108" class="code-text">navigate(`/boardview/${no}`)</text>
+
+  <path d="M 225 1030 L 225 1070" class="arrow"/>
+
+  <!-- ========== 5. 게시글 삭제 (Soft Delete) ========== -->
+  <text x="700" y="1180" class="header" font-size="14px">5. 게시글 삭제 (Soft Delete)</text>
+
+  <!-- Frontend -->
+  <rect x="80" y="1205" width="290" height="60" rx="5" class="frontend"/>
+  <text x="225" y="1225" class="text" font-weight="bold">삭제 버튼 클릭</text>
+  <text x="225" y="1243" class="code-text">api.delete(`/board/${no}`)</text>
+  <text x="225" y="1258" class="small-text">게시글 번호 전송</text>
+
+  <!-- Backend -->
+  <rect x="480" y="1205" width="340" height="80" rx="5" class="backend"/>
+  <text x="650" y="1225" class="text" font-weight="bold">DELETE /board/{no}</text>
+  <text x="650" y="1243" class="small-text">게시글 번호 수신</text>
+  <text x="650" y="1258" class="code-text">get_user() - 권한 확인</text>
+  <text x="650" y="1273" class="small-text">실제 삭제 X, 플래그만 변경</text>
+
+  <!-- Database -->
+  <rect x="930" y="1205" width="390" height="70" rx="5" class="database"/>
+  <text x="1125" y="1225" class="text" font-weight="bold">UPDATE 쿼리</text>
+  <text x="1125" y="1243" class="code-text">UPDATE board</text>
+  <text x="1125" y="1258" class="code-text">SET delYn = 1</text>
+  <text x="1125" y="1273" class="small-text">WHERE no = {no}</text>
+
+  <path d="M 370 1235 L 480 1235" class="arrow"/>
+  <path d="M 820 1235 L 930 1235" class="arrow"/>
+  <path d="M 930 1255 L 820 1255" class="arrow"/>
+  <path d="M 820 1255 L 370 1255" class="arrow"/>
+
+  <text x="425" y="1230" class="label">삭제</text>
+  <text x="860" y="1270" class="label">완료</text>
+
+  <!-- Frontend 결과 -->
+  <rect x="80" y="1305" width="290" height="50" rx="5" class="frontend"/>
+  <text x="225" y="1325" class="text">성공 알림</text>
+  <text x="225" y="1343" class="code-text">navigate("/") - 목록으로</text>
+
+  <path d="M 225 1265 L 225 1305" class="arrow"/>
+
+  <!-- ========== 6. 댓글 목록 조회 ========== -->
+  <text x="700" y="1415" class="header" font-size="14px">6. 댓글 목록 조회 (NEW)</text>
+
+  <!-- Frontend -->
+  <rect x="80" y="1440" width="290" height="70" rx="5" class="comment"/>
+  <text x="225" y="1460" class="text" font-weight="bold">댓글 목록 요청</text>
+  <text x="225" y="1478" class="code-text">api.get(`/board/comment/${boardNo}`)</text>
+  <text x="225" y="1493" class="small-text">useEffect - 페이지 로드 시</text>
+
+  <!-- Backend -->
+  <rect x="480" y="1440" width="340" height="90" rx="5" class="backend"/>
+  <text x="650" y="1460" class="text" font-weight="bold">GET /board/comment/{boardNo}</text>
+  <text x="650" y="1478" class="small-text">게시글 번호로 댓글 조회</text>
+  <text x="650" y="1493" class="code-text">router.get("/comment/{boardNo}")</text>
+  <text x="650" y="1508" class="small-text">인증 불필요 (조회만)</text>
+
+  <!-- Database -->
+  <rect x="930" y="1440" width="390" height="90" rx="5" class="database"/>
+  <text x="1125" y="1460" class="text" font-weight="bold">SELECT 쿼리</text>
+  <text x="1125" y="1478" class="code-text">SELECT c.*, u.name FROM comment c</text>
+  <text x="1125" y="1493" class="code-text">JOIN user u ON c.userNo = u.no</text>
+  <text x="1125" y="1508" class="small-text">WHERE boardNo={no} AND delYn=0</text>
+  <text x="1125" y="1523" class="small-text">ORDER BY c.no ASC</text>
+
+  <path d="M 370 1475 L 480 1475" class="arrow"/>
+  <path d="M 820 1475 L 930 1475" class="arrow"/>
+  <path d="M 930 1495 L 820 1495" class="arrow"/>
+  <path d="M 820 1495 L 370 1495" class="arrow"/>
+
+  <text x="425" y="1470" class="label">요청</text>
+  <text x="860" y="1510" class="label">댓글 목록</text>
+
+  <!-- Frontend 결과 -->
+  <rect x="80" y="1560" width="290" height="60" rx="5" class="comment"/>
+  <text x="225" y="1580" class="text">댓글 렌더링</text>
+  <text x="225" y="1598" class="small-text">작성자명, 내용, 날짜 표시</text>
+  <text x="225" y="1613" class="small-text">본인 댓글 → 삭제 버튼</text>
+
+  <path d="M 225 1510 L 225 1560" class="arrow"/>
+
+  <!-- ========== 7. 댓글 등록 ========== -->
+  <text x="700" y="1680" class="header" font-size="14px">7. 댓글 등록 (NEW)</text>
+
+  <!-- Frontend -->
+  <rect x="80" y="1705" width="290" height="80" rx="5" class="comment"/>
+  <text x="225" y="1725" class="text" font-weight="bold">댓글 작성 폼</text>
+  <text x="225" y="1743" class="code-text">submitComment()</text>
+  <text x="225" y="1758" class="small-text">입력값 검증</text>
+  <text x="225" y="1773" class="code-text">api.put("/board/comment", data)</text>
+
+  <!-- Backend -->
+  <rect x="480" y="1705" width="340" height="100" rx="5" class="backend"/>
+  <text x="650" y="1725" class="text" font-weight="bold">PUT /board/comment</text>
+  <text x="650" y="1743" class="small-text">CommentModel 검증</text>
+  <text x="650" y="1758" class="code-text">get_user() - 작성자 확인 필수</text>
+  <text x="650" y="1773" class="small-text">{boardNo, content}</text>
+  <text x="650" y="1788" class="code-text">userNo = payload['sub']</text>
+
+  <!-- Database -->
+  <rect x="930" y="1705" width="390" height="80" rx="5" class="database"/>
+  <text x="1125" y="1725" class="text" font-weight="bold">INSERT 쿼리</text>
+  <text x="1125" y="1743" class="code-text">INSERT INTO comment</text>
+  <text x="1125" y="1758" class="code-text">(boardNo, content, userNo)</text>
+  <text x="1125" y="1773" class="small-text">VALUES ({boardNo}, '{content}', {userNo})</text>
+
+  <path d="M 370 1745 L 480 1745" class="arrow"/>
+  <path d="M 820 1745 L 930 1745" class="arrow"/>
+  <path d="M 930 1765 L 820 1765" class="arrow"/>
+  <path d="M 820 1765 L 370 1765" class="arrow"/>
+
+  <text x="425" y="1740" class="label">등록</text>
+  <text x="860" y="1780" class="label">성공</text>
+
+  <!-- Frontend 결과 -->
+  <rect x="80" y="1825" width="290" height="60" rx="5" class="comment"/>
+  <text x="225" y="1845" class="text">댓글 등록 완료</text>
+  <text x="225" y="1863" class="code-text">setNewComment("")</text>
+  <text x="225" y="1878" class="code-text">fetchComments() - 재조회</text>
+
+  <path d="M 225 1780 L 225 1825" class="arrow"/>
+
+  <!-- ========== 8. 댓글 삭제 ========== -->
+  <text x="700" y="1950" class="header" font-size="14px">8. 댓글 삭제 (NEW)</text>
+
+  <!-- Frontend -->
+  <rect x="80" y="1975" width="290" height="80" rx="5" class="comment"/>
+  <text x="225" y="1995" class="text" font-weight="bold">삭제 버튼 클릭</text>
+  <text x="225" y="2013" class="code-text">deleteComment(commentNo)</text>
+  <text x="225" y="2028" class="small-text">confirm 확인창</text>
+  <text x="225" y="2043" class="code-text">api.delete(`/board/comment/${no}`)</text>
+
+  <!-- Backend -->
+  <rect x="480" y="1975" width="340" height="100" rx="5" class="backend"/>
+  <text x="650" y="1995" class="text" font-weight="bold">DELETE /board/comment/{no}</text>
+  <text x="650" y="2013" class="small-text">댓글 번호 수신</text>
+  <text x="650" y="2028" class="code-text">get_user() - 본인 확인 필수</text>
+  <text x="650" y="2043" class="small-text">본인이 작성한 댓글만 삭제 가능</text>
+  <text x="650" y="2058" class="code-text">WHERE no={no} AND userNo={sub}</text>
+
+  <!-- Database -->
+  <rect x="930" y="1975" width="390" height="80" rx="5" class="database"/>
+  <text x="1125" y="1995" class="text" font-weight="bold">UPDATE 쿼리 (Soft Delete)</text>
+  <text x="1125" y="2013" class="code-text">UPDATE comment</text>
+  <text x="1125" y="2028" class="code-text">SET delYn = 1</text>
+  <text x="1125" y="2043" class="small-text">WHERE no={no} AND userNo={userNo}</text>
+
+  <path d="M 370 2015 L 480 2015" class="arrow"/>
+  <path d="M 820 2015 L 930 2015" class="arrow"/>
+  <path d="M 930 2035 L 820 2035" class="arrow"/>
+  <path d="M 820 2035 L 370 2035" class="arrow"/>
+
+  <text x="425" y="2010" class="label">삭제 요청</text>
+  <text x="860" y="2050" class="label">삭제 완료</text>
+
+  <!-- Frontend 결과 -->
+  <rect x="80" y="2095" width="290" height="50" rx="5" class="comment"/>
+  <text x="225" y="2115" class="text">삭제 완료</text>
+  <text x="225" y="2133" class="code-text">fetchComments() - 재조회</text>
+
+  <path d="M 225 2050 L 225 2095" class="arrow"/>
+
+  <!-- ========== HTTP 메서드 정리 테이블 ========== -->
+  <text x="700" y="2215" class="header" font-size="14px">HTTP 메서드 및 데이터 흐름 정리</text>
+
+  <rect x="100" y="2240" width="1200" height="460" rx="5" fill="#ffffff" stroke="#90a4ae" stroke-width="2"/>
+
+  <!-- 테이블 헤더 -->
+  <rect x="100" y="2240" width="200" height="40" fill="#1976d2"/>
+  <rect x="300" y="2240" width="200" height="40" fill="#388e3c"/>
+  <rect x="500" y="2240" width="250" height="40" fill="#f57c00"/>
+  <rect x="750" y="2240" width="250" height="40" fill="#7b1fa2"/>
+  <rect x="1000" y="2240" width="300" height="40" fill="#c62828"/>
+
+  <text x="200" y="2265" class="text" fill="white" font-weight="bold">기능</text>
+  <text x="400" y="2265" class="text" fill="white" font-weight="bold">Frontend</text>
+  <text x="625" y="2265" class="text" fill="white" font-weight="bold">Backend</text>
+  <text x="875" y="2265" class="text" fill="white" font-weight="bold">Database</text>
+  <text x="1150" y="2265" class="text" fill="white" font-weight="bold">비고</text>
+
+  <!-- 행 구분선 -->
+  <line x1="100" y1="2280" x2="1300" y2="2280" stroke="#bdbdbd" stroke-width="1"/>
+  <line x1="100" y1="2350" x2="1300" y2="2350" stroke="#bdbdbd" stroke-width="1"/>
+  <line x1="100" y1="2420" x2="1300" y2="2420" stroke="#bdbdbd" stroke-width="1"/>
+  <line x1="100" y1="2490" x2="1300" y2="2490" stroke="#bdbdbd" stroke-width="1"/>
+  <line x1="100" y1="2560" x2="1300" y2="2560" stroke="#bdbdbd" stroke-width="1"/>
+  <line x1="100" y1="2630" x2="1300" y2="2630" stroke="#bdbdbd" stroke-width="1"/>
+
+  <!-- 열 구분선 -->
+  <line x1="300" y1="2240" x2="300" y2="2700" stroke="#bdbdbd" stroke-width="1"/>
+  <line x1="500" y1="2240" x2="500" y2="2700" stroke="#bdbdbd" stroke-width="1"/>
+  <line x1="750" y1="2240" x2="750" y2="2700" stroke="#bdbdbd" stroke-width="1"/>
+  <line x1="1000" y1="2240" x2="1000" y2="2700" stroke="#bdbdbd" stroke-width="1"/>
+
+  <!-- 목록 조회 -->
+  <text x="200" y="2315" class="text" font-weight="bold">목록 조회</text>
+  <text x="400" y="2305" class="code-text">POST /board</text>
+  <text x="400" y="2325" class="small-text">params: 페이징/검색</text>
+  <text x="625" y="2315" class="code-text">POST /board</text>
+  <text x="875" y="2305" class="code-text">SELECT * FROM board</text>
+  <text x="875" y="2325" class="small-text">JOIN user</text>
+  <text x="1150" y="2315" class="small-text">페이징, 검색 포함</text>
+
+  <!-- 상세 조회 -->
+  <text x="200" y="2385" class="text" font-weight="bold">상세 조회</text>
+  <text x="400" y="2375" class="code-text">POST /board/{no}</text>
+  <text x="400" y="2395" class="small-text">게시글 번호</text>
+  <text x="625" y="2375" class="code-text">POST /board/{no}</text>
+  <text x="625" y="2395" class="small-text">권한 체크 로직</text>
+  <text x="875" y="2375" class="code-text">SELECT board.*</text>
+  <text x="875" y="2395" class="small-text">JOIN user</text>
+  <text x="1150" y="2385" class="small-text">role 반환</text>
+
+  <!-- 글 작성 -->
+  <text x="200" y="2455" class="text" font-weight="bold">글 작성</text>
+  <text x="400" y="2445" class="code-text">PUT /board</text>
+  <text x="400" y="2465" class="small-text">{title, content}</text>
+  <text x="625" y="2445" class="code-text">PUT /board</text>
+  <text x="625" y="2465" class="small-text">add_key() 호출</text>
+  <text x="875" y="2445" class="code-text">INSERT INTO board</text>
+  <text x="875" y="2465" class="small-text">LAST_INSERT_ID()</text>
+  <text x="1150" y="2455" class="small-text">새 글 번호 반환</text>
+
+  <!-- 글 수정 -->
+  <text x="200" y="2525" class="text" font-weight="bold">글 수정</text>
+  <text x="400" y="2515" class="code-text">PATCH /board/{no}</text>
+  <text x="400" y="2535" class="small-text">{content}</text>
+  <text x="625" y="2515" class="code-text">PATCH /board/{no}</text>
+  <text x="625" y="2535" class="small-text">권한 확인</text>
+  <text x="875" y="2515" class="code-text">UPDATE board</text>
+  <text x="875" y="2535" class="small-text">SET content, regDate</text>
+  <text x="1150" y="2525" class="small-text">본문만 수정</text>
+
+  <!-- 글 삭제 -->
+  <text x="200" y="2595" class="text" font-weight="bold">글 삭제</text>
+  <text x="400" y="2585" class="code-text">DELETE /board/{no}</text>
+  <text x="400" y="2605" class="small-text">게시글 번호</text>
+  <text x="625" y="2585" class="code-text">DELETE /board/{no}</text>
+  <text x="625" y="2605" class="small-text">권한 확인</text>
+  <text x="875" y="2585" class="code-text">UPDATE board</text>
+  <text x="875" y="2605" class="small-text">SET delYn = 1</text>
+  <text x="1150" y="2595" class="small-text">Soft Delete</text>
+
+  <!-- 댓글 조회 -->
+  <rect x="100" y="2630" width="1200" height="70" fill="#fffde7"/>
+  <text x="200" y="2665" class="text" font-weight="bold">댓글 조회</text>
+  <text x="400" y="2655" class="code-text">GET /board/comment/{boardNo}</text>
+  <text x="400" y="2675" class="small-text">게시글 번호</text>
+  <text x="625" y="2655" class="code-text">GET /board/comment/{boardNo}</text>
+  <text x="625" y="2675" class="small-text">인증 불필요</text>
+  <text x="875" y="2655" class="code-text">SELECT c.*, u.name</text>
+  <text x="875" y="2675" class="small-text">JOIN user WHERE delYn=0</text>
+  <text x="1150" y="2665" class="small-text">댓글 목록 반환</text>
+
+  <!-- 댓글 등록 -->
+  <line x1="100" y1="2630" x2="1300" y2="2630" stroke="#bdbdbd" stroke-width="1"/>
+  <text x="200" y="2595" class="text" font-weight="bold" fill="#f9a825">댓글 등록</text>
+  <text x="400" y="2585" class="code-text" fill="#f57c00">PUT /board/comment</text>
+  <text x="400" y="2605" class="small-text" fill="#f57c00">{boardNo, content}</text>
+  <text x="625" y="2585" class="code-text" fill="#f57c00">PUT /board/comment</text>
+  <text x="625" y="2605" class="small-text" fill="#f57c00">get_user() 필수</text>
+  <text x="875" y="2585" class="code-text" fill="#f57c00">INSERT INTO comment</text>
+  <text x="875" y="2605" class="small-text" fill="#f57c00">(boardNo, content, userNo)</text>
+  <text x="1150" y="2595" class="small-text" fill="#f57c00">인증된 사용자만</text>
+
+  <!-- 댓글 삭제 위치 조정 -->
+  <text x="200" y="2665" class="text" font-weight="bold" fill="#f9a825">댓글 삭제</text>
+  <text x="400" y="2655" class="code-text" fill="#d84315">DELETE /board/comment/{no}</text>
+  <text x="400" y="2675" class="small-text" fill="#d84315">댓글 번호</text>
+  <text x="625" y="2655" class="code-text" fill="#d84315">DELETE /board/comment/{no}</text>
+  <text x="625" y="2675" class="small-text" fill="#d84315">본인 확인</text>
+  <text x="875" y="2655" class="code-text" fill="#d84315">UPDATE comment SET delYn=1</text>
+  <text x="875" y="2675" class="small-text" fill="#d84315">WHERE no AND userNo</text>
+  <text x="1150" y="2665" class="small-text" fill="#d84315">Soft Delete</text>
+
+</svg>

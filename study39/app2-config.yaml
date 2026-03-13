@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app2-config
+data:
+  ROOT_PATH: "/app1"
+  CLIENT_ID: "03e9f29d1f90c0d0cbca3f106d67ea8b"
+  CLIENT_SECRET: "pDKcTbMZZcJv9X81MO3LAz5PwKOTmwm5"
+  REDIRECT_URI: "http://aiedu.tplinkdns.com:6103/app1/oauth/callback/kakao"
+  DNS: "aiedu.tplinkdns.com"
+  SECURE: "False"
+  REDIS_HOST : "redis-service"
+  REDIS_PORT : "6379"
+  REDIS_ACCESS_DB : "0"
+  REDIS_REFRESH_DB : "1"
+
+
+
+  ##config file 은 .env 파일 내용을 가져오는거

@@ -1,0 +1,30 @@
+services:
+  react:
+    image: node:24.13.0
+    depends_on:
+      - fastapi
+    container_name: react
+    ports:
+      - 80:5173
+    volumes:
+      - ../workspace/frontend:/workspace/frontend
+    command: ["sleep", "infinity"]
+
+  fastapi:
+    container_name: fastapi
+    image: python:3.12.9
+    # depends_on:
+    #   - mariadb
+    ports:
+      - 8000:8000
+    volumes:
+      - ../workspace/backend:/workspace/backend
+  
+    command: ["sleep", "infinity"]
+
+  # mariadb:
+  #   container_name: mariadb
+  #   image:mariadb:
+  #   ports:  
+  #   -8000:8000
+  #   volumes:
