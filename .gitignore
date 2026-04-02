@@ -10,3 +10,8 @@ study41/data/
 *.ibd
 ib_logfile*
 undo*g
+
+
+# Neo4j data files
+**/data/transactions/
+*.db.*
