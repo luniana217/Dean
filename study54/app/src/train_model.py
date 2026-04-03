@@ -5,10 +5,10 @@ import torch.nn as nn
 # --- 하이퍼파라미터 설정 ---
 tokenizer = tiktoken.get_encoding("gpt2")
 VOCAB_SIZE = tokenizer.n_vocab      # 어휘 사전 크기 (GPT-2 기준 50,257)
-CONTEXT_LENGTH = 256                # 한 번에 처리할 최대 시퀀스 길이
+CONTEXT_LENGTH = 128                # 한 번에 처리할 최대 시퀀스 길이
 EMB_DIM = 768                       # 임베딩 벡터의 차원
-NUM_HEADS = 6                      # 멀티-헤드 어텐션의 헤드 개수
-NUM_LAYERS = 6                     # 트랜스포머 블록 쌓는 횟수
+NUM_HEADS = 12                      # 멀티-헤드 어텐션의 헤드 개수
+NUM_LAYERS = 12                     # 트랜스포머 블록 쌓는 횟수
 DROP_RATE = 0.1                     # 드롭아웃 확률
 QKV_BIAS = False                    # Query, Key, Value 선형 층의 편향 사용 여부
 

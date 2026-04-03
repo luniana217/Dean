@@ -60,7 +60,7 @@ def run(token_size:int = 10000):
       # txt = txt[:token_size]
 
       # GPT-2용 토크나이저 인코딩 로드
-      tokenizer = tiktoken.get_encoding("gpt2")
+      tokenizer = tiktoken.get_encoding("gpt2") # BPE(Byte Pair Encoding)
       
       # 커스텀 데이터셋 생성
       # max_length=32: 한 번에 32개 토큰 학습 / stride=4: 4토큰씩 옆으로 이동하며 샘플링

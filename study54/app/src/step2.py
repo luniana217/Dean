@@ -50,7 +50,7 @@ def run():
   """
   테스트를 실행하는 메인 함수
   """
-  text = "invisible."
+  text = "Harry Potter was a wizard."
   
   # 1. 문장 전체를 토큰화하는 방식 테스트
   test1(text)
