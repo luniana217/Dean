@@ -15,3 +15,5 @@ undo*g
 # Neo4j data files
 **/data/transactions/
 *.db.*
+
+.vscode/mcp.json

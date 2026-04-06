@@ -1,0 +1,20 @@
+{
+  "servers": {
+    "github-manager": {
+      "command": "uv",
+      "args": [
+        "--project",
+        "D:/study/hayoung/study56/app",
+        "run",
+        "D:/study/hayoung/study56/app/main.py"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "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",
+        "GITHUB_REPO_NAME": "luniana217/for_issues"
+      }
+    }
+  }
+}
+
+
+// 경로 안맞추면 터짐 

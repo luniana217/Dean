@@ -1,18 +1,27 @@
-from src import step1, step2, step3, step4, step5
-
+from src import step1, step2, step3, step4, step5, step6, step7, step8,step9, step10, step11
+import os
 def main():
-	print("1. Step 1: 훈련 데이터 준비")
-	step1.run()
-	print("2. Step 2: 토크나이저 테스트")
-	step2.run()
-	print("3. Step 3: 데이터 로더 정의")
-	datasets = step3.run(10000) #dataset 만드는 부분
-	for i, dataset in enumerate(datasets):
-		print(f"{i} 모델 정의 및 훈련")
-		step4.run(dataset)
-	print("4. Step 5: 모델 테스트")
-	step5.run()
+  # print("1. Step 1: 훈련 데이터 준비")
+  # step1.run()
+  # print("2. Step 2: 토크나이저 테스트")
+  # step2.run()
+  # print("3. Step 3: 데이터 로더 정의")
+  datasets = step3.run(10000)
+#   for i, dataset in enumerate(datasets):
+#     print(f"{i} 모델 정의 및 훈련")
+#     step4.run(dataset)
+#     step6.run(dataset, "20260402_1756/001.pth")
+#   print("4. Step 5: 모델 테스트")
+#   step5.run("20260402_1747")
+#   print("5. Step 7: 모델 변환")
+#   step7.run("20260402_1747/005.pth", 1)
+#   print("6. Step 8: 모델 테스트")
+#   step8.run("20260403_1052/001.safetensors")
+#   step9.run("20260403_1052")
+  step10.run("models/20260403_1052/001.safetensors", "models/20260403_1052")
+  step11.run()
+
+
 
 if __name__ == "__main__":
   main()
- 
