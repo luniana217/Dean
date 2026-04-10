@@ -10,7 +10,7 @@ embed_models = [
 def main():
   print("Hello from app!")
   # print("Step 1 실행: Ollama 모델과의 통신을 위한 간단한 함수")
-  step01.run(models[4])
+  # step01.run(models[4])
   # print("Step 2 실행: Ollama 모델과의 스트리밍(Streaming) 통신을 위한 간단한 함수")
   # step02.run(models[2])
   # print("Step 3 실행: Ollama 모델과의 통신을 위한 체인(Chain) 구성")
