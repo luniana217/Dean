@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean Rock Legends | Digital Hall of Fame</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Rock+Salt&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">K-ROCK <span>HALL</span></div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#legends">Legends</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-bg" style="background-image: url('hero.png');"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="glitch" data-text="KOREAN ROCK LEGENDS">KOREAN ROCK LEGENDS</h1>
+                <p>대한민국 록의 역사를 바꾼 전설적인 아티스트들을 만나보세요.</p>
+                <div class="hero-btns">
+                    <a href="#legends" class="btn primary">Explore Hall</a>
+                    <button id="ai-chat-btn" class="btn secondary">Chat with Ollama</button>
+                </div>
+            </div>
+            <div class="scroll-down">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="legends" class="gallery-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>The Pantheon</h2>
+                    <div class="filter-wrapper">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="legend">Legends</button>
+                        <button class="filter-btn" data-filter="metal">Metal</button>
+                        <button class="filter-btn" data-filter="modern">Modern Rock</button>
+                        <button class="filter-btn" data-filter="punk">Punk</button>
+                    </div>
+                </div>
+
+                <div id="artist-grid" class="artist-grid">
+                    <!-- Cards will be injected by script.js -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for Artist Details -->
+    <div id="artist-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-modal">&times;</span>
+            <div id="modal-body">
+                <!-- Data will be injected -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 K-Rock Digital Archive. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-spotify"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
