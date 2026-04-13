@@ -4,9 +4,9 @@
       "command": "uv",
       "args": [
         "--project",
-        "D:/study/hayoung/study56/app",
+        "C:/Users/김하영/Desktop/coding/Dean/study56",
         "run",
-        "D:/study/hayoung/study56/app/main.py"
+        "C:/Users/김하영/Desktop/coding/Dean/study56/app/main.py"
       ],
       "env": {
         "GITHUB_TOKEN": "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",

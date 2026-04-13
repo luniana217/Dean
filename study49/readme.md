@@ -35,7 +35,7 @@ docker cp .\sample.text master:opt/spark/data/sample.text
 
 cmd>
 docker exec -it (container이름) bash
->cd spark-4.1.-bin-hadoop3
+>cd spark-4.1.1-bin-hadoop3
 >./sbin/start-master.sh 
 
 치면 localhost:8080 들어가지고 7077은 스파크 내부에서 실행용
