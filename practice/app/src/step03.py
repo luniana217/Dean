@@ -1,0 +1,132 @@
+from settings import settings
+from langchain_ollama import ChatOllama
+import logging
+from langgraph.prebuilt import create_react_agent
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+llm = ChatOllama(
+  model=settings.ollama_model_name,
+  base_url=settings.ollama_base_url,
+)
+
+
+def create_post(author: str, title: str, content: str) -> dict:
+    """ 게시글 작성시 사용"""
+    # DB 저장
+    return {"status": "success", "message": "게시글 생성 완료"}
+
+def list_posts() -> list:
+    """ 게시글 목록 요청시 사용"""
+    return [{"id": 1, "title": "예시"}]
+
+def get_post(post_id: int) -> dict:
+    """ 게시글 조회시 사용 """
+    return {"id": post_id, "title": "제목", "content": "내용"}
+
+def update_post(post_id: int, title: str, content: str) -> dict:
+    """ 게시글 수정시 사용  """
+    return {"status": "success"}
+
+def delete_post(post_id: int) -> dict:
+    """ 게시글 삭제시 사용 """
+    return {"status": "deleted"}
+  
+#   # 검색 전용 프롬프트 구성
+# def board(query: str) -> str: board_prompt = ChatPromptTemplate.from_template(
+#   """ you are the admin of the board. analyze the user's natural language and 
+
+#   Args:
+#   query: query string
+#   """
+# ) 함수반환 없고, 문법상 틀렸고 , 문제만 일으키니 삭제가 맞음
+#handoff 의 경우 single agent 이기 때문에 있을필요 x, 삭제함
+board_agent = create_react_agent(
+  llm,
+  [create_post, list_posts, get_post, update_post, delete_post],
+   prompt="""
+  당신은 게시판 관리 AI입니다.
+
+사용자의 요청을 분석하여 반드시 하나의 작업을 선택하고 실행해야 합니다.
+
+[가능한 작업]
+
+1. create_post
+- 새로운 게시글을 작성할 때 사용
+- 반드시 author, title, content 필요
+
+2. list_posts
+- 게시글 목록을 요청할 때 사용
+- 예: "목록 보여줘", "게시글 뭐 있어?"
+
+3. get_post
+- 특정 게시글 조회
+- 반드시 post_id 필요
+- 예: "1번 글 보여줘"
+
+4. update_post
+- 게시글 수정
+- 반드시 post_id 필요
+- title 또는 content 변경
+
+5. delete_post
+- 게시글 삭제
+- 반드시 post_id 필요
+
+[작업 선택 규칙 - 매우 중요]
+
+- "작성", "써줘", "등록" → create_post
+- "목록", "리스트", "전체" → list_posts
+- "몇 번 글", "게시글 보여줘" → get_post
+- "수정", "바꿔", "고쳐" → update_post
+- "삭제", "지워" → delete_post
+
+[파라미터 추출 규칙]
+
+- author: 작성자 이름
+- title: 제목
+- content: 내용
+- post_id: 숫자
+
+[중요 규칙]
+
+- 반드시 하나의 tool만 호출하라
+- 필요한 값이 없으면 사용자에게 질문하라
+- 절대 직접 답변하지 말고 tool을 사용하라
+  """
+)
+
+
+def run():
+  try:
+   
+    # graph = workflow.compile(checkpointer=checkpointer)
+    
+   
+
+    config = {"configurable": {"thread_id": "test_session_123"}}
+    while True:
+      try:
+        user_input = input("🧑‍💻 User: ")
+        if user_input.lower() in ["quit", "exit", "q"]:
+          logger.info("Goodbye!")
+          break
+
+        turn = board_agent.invoke(
+          {"messages": [{"role": "user", "content": user_input}]},
+          config,
+        )
+        messages = turn['messages']
+        last_message = messages[-1]
+        logger.info(f"🤖 Agent: {last_message.content}")
+      except Exception as e:
+        logger.error(e)
+      break
+    
+  except Exception as e:
+    logger.error(f"실행 중 오류 발생: {str(e)}")
+
+if __name__ == "__main__":
+  run()
