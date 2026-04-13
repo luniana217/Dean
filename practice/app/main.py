@@ -1,7 +1,18 @@
-from src import step01, step02, step03
-from fastapi import fastapi 
+from src import  step03
+from Fastapi import Fastapi 
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class PromptRequest(BaseModel):
     prompt: str
