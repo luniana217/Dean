@@ -7,8 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel             # BaseModel import 필수
 
 # board_agent는 step03에서 가져옴 (MemorySaver checkpointer 포함된 버전)
-from src.step03 import board_agent
-from src.database import init_db
+from src.diary import board_agent
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -77,7 +77,7 @@ async def chat(req: PromptRequest):
 
 def main():
   print("Hello from app!")
-  step03.run()
+  diary.run()
 
 if __name__ == "__main__":
     uvicorn.run(
