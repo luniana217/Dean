@@ -10,4 +10,6 @@ dependencies = [
     "langgraph>=1.1.6",
     "langgraph-swarm>=0.1.0",
     "pydantic-settings>=2.13.1",
+    "pymysql>=1.1.2",
+    "sqlalchemy>=2.0.49",
 ]

@@ -1,11 +1,14 @@
-from src import  step03
-from fastapi import FastAPI ,HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from src.step03 import board_agent
 import asyncio
 from contextlib import asynccontextmanager
 
+import uvicorn
+from fastapi import FastAPI, HTTPException  # FastAPI 대소문자 주의
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel             # BaseModel import 필수
+
+# board_agent는 step03에서 가져옴 (MemorySaver checkpointer 포함된 버전)
+from src.step03 import board_agent
+from src.database import init_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,26 +37,52 @@ class PromptRequest(BaseModel):
     thread_id: str = "default"
 
 
-# 핵심 API
-@app.post("/chat")
-async def chat(req: PromptRequest):
-    result = board_agent.invoke({
-        "messages": [
-            {"role": "user", "content": req.prompt}
-        ]
-    })
+class ChatResponse(BaseModel):
+   result: str
+   thread_id: str = "default"
 
-    return {
-        "result": result["messages"][-1].content
-    }
+@app.get("/")
+def health_check():
+   return{"status": "ok"}
+
+# 핵심 API
+@app.post("/chat",response_model=ChatResponse)
+async def chat(req: PromptRequest):
+    # thread_id를 config에 넘겨야 MemorySaver가 대화 히스토리를 유지함
+    config = {"configurable":{"thread_id": req.thread_id}}
+    
+    try:
+       loop = asyncio.get_event_loop()
+       
+       result = await loop.run_in_executor(
+         None,
+         lambda: board_agent.invoke(
+         {
+        "messages": [{"role": "user", "content": req.prompt}]},
+        config,
+       )
+     )
+
+       return ChatResponse(
+            result=result["messages"][-1].content,
+            thread_id=req.thread_id,
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 
 @app.get("/")
 
 def main():
   print("Hello from app!")
-  # step01.run()
-  # step02.run()
   step03.run()
 
 if __name__ == "__main__":
-  main()
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,   # 개발 중 코드 변경 시 자동 재시작 (운영 시 False로 변경)
+    )

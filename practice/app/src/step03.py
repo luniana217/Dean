@@ -3,36 +3,108 @@ from langchain_ollama import ChatOllama
 import logging
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
+from src.database import SessionLocal, Post
 
+
+
+# 로깅 기본 설정 (INFO 레벨 이상 출력)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Ollama LLM 초기화 - settings에서 모델명과 base URL을 불러옴
 llm = ChatOllama(
   model=settings.ollama_model_name,
   base_url=settings.ollama_base_url,
 )
 
 
+def get_db():
+   """Tool 함수 내부에서 직접 세션 사용하기 위한 헬퍼"""
+   return SessionLocal()
+
+
+# ────────────────────────────────────────
+# Tool 함수 정의 (Agent가 호출할 수 있는 도구들)
+# ────────────────────────────────────────
+import logging
+logger = logging.getLogger(__name__)
+
 def create_post(author: str, title: str, content: str) -> dict:
-    """ 게시글 작성시 사용"""
+    """ 게시글 작성시 사용. author, title, content 모두 필수. """
+    db = get_db()
     # DB 저장
-    return {"status": "success", "message": "게시글 생성 완료"}
+    try:
+      post = Post(author=author, title=title, content=content)
+      db.add(post)
+      db.commit()
+      db.refresh(post) 
+      return {"status": "success","id": post.id, "message": "게시글 생성 완료"}
+    except Exception as e:
+      db.rollback()
+      print(f" DB 오류 내용: {e}")
+      return {"status": "error", "message": str(e)}
+    finally:
+      db.close()
 
 def list_posts() -> list:
     """ 게시글 목록 요청시 사용"""
-    return [{"id": 1, "title": "예시"}]
+    db = get_db()
+    try:
+      posts = db.query(Post).order_by(Post.created_at.desc()).all()
+      return [{"id": post.id, "title": post.title} for post in posts]
+    except Exception as e:
+      return {"status": "error", "message": str(e)}
+    finally:
+      db.close()
+    
 
 def get_post(post_id: int) -> dict:
-    """ 게시글 조회시 사용 """
-    return {"id": post_id, "title": "제목", "content": "내용"}
+    """ 게시글 조회시 사용. post_id 필수 """
+    db = get_db()
+    try:
+      post = db.query(Post).filter(Post.id == post_id).first()
+      if not post:
+        return {"status": "error", "message": f"{post_id}번 게시글을 찾을 수 없습니다."}
+      return {"id": post.id,  "author": post.author,   "title": post.title, "content": post.content,"created_at": str(post.created_at), "updated_at": str(post.updated_at) }
+    finally:
+      db.close()
+   
 
 def update_post(post_id: int, title: str, content: str) -> dict:
     """ 게시글 수정시 사용  """
-    return {"status": "success"}
+    db = get_db()
+    try:
+      post = db.query(Post).filter(Post.id == post_id).first()
+      if not post:
+        return {"status": "error", "message": f"{post_id}번 게시글을 찾을 수 없습니다."}
+      post.title = title
+      post.content = content
+      db.commit()
+      return {"status": "success", "message": f"{post_id}번 게시글이 수정되었습니다."}
+    except Exception as e:
+      db.rollback()
+      return {"status": "error", "message": str(e)}
+    finally:
+      db.close()
+      
+
+        
 
 def delete_post(post_id: int) -> dict:
-    """ 게시글 삭제시 사용 """
-    return {"status": "deleted"}
+    """ 게시글 삭제시 사용. post_id 필수. """
+    db = get_db()
+    try:
+      post = db.query(Post).filter(Post.id == post_id).first()
+      if not post:
+        return{"status": "error", "message": f"{post_id}번 게시글을 찾을 수 없습니다."}
+      db.delete(post)
+      db.commit()
+      return {"status": "success", "message": f"{post_id}번 게시글이 삭제되었습니다."}
+    except Exception as e:
+      db.rollback()
+      return{"status": "error", "message": str(e)}
+    finally:
+      db.close()
   
 #   # 검색 전용 프롬프트 구성
 # def board(query: str) -> str: board_prompt = ChatPromptTemplate.from_template(
@@ -43,8 +115,24 @@ def delete_post(post_id: int) -> dict:
 #   """
 # ) 함수반환 없고, 문법상 틀렸고 , 문제만 일으키니 삭제가 맞음
 #handoff 의 경우 single agent 이기 때문에 있을필요 x, 삭제함
+
+
+
+
+# ────────────────────────────────────────
+# MemorySaver: 인메모리 checkpointer
+# - thread_id 기준으로 대화 상태(메시지 히스토리)를 저장
+# - 같은 thread_id로 invoke하면 이전 대화 문맥이 자동으로 유지됨
+# - 프로세스 종료 시 메모리 초기화됨 (영속성 필요 시 SqliteSaver 등으로 교체)
+# ────────────────────────────────────────
 checkpointer = MemorySaver()
 
+
+# ────────────────────────────────────────
+# ReAct Agent 생성
+# - create_react_agent: LLM + tools + prompt로 단일 에이전트 구성
+# - checkpointer를 주입해야 thread_id 기반 멀티턴 메모리가 실제로 동작함
+# ────────────────────────────────────────  
 board_agent = create_react_agent(
   llm,tools=
   [create_post, list_posts, get_post, update_post, delete_post],checkpointer=checkpointer,
@@ -108,7 +196,8 @@ def run():
     # graph = workflow.compile(checkpointer=checkpointer)
     
    
-
+        # thread_id로 대화 세션을 구분
+        # checkpointer가 이 thread_id를 키로 메시지 히스토리를 저장/불러옴
     config = {"configurable": {"thread_id": "test_session_123"}}
     logger.info("게시판 에이전트를 시작합니다. 종료하려면 'quit' 또는 'q'를 입력하세요.")
     while True:
@@ -121,6 +210,10 @@ def run():
           logger.info("Goodbye!")
           break
 
+         # 에이전트 호출
+         # - checkpointer가 있으므로 매번 전체 히스토리를 직접 넘길 필요 없음
+         # - thread_id 기준으로 이전 대화 문맥이 자동으로 이어짐  
+
         turn = board_agent.invoke(
           {"messages": [{"role": "user", "content": user_input}]},
           config,
@@ -129,6 +222,7 @@ def run():
         last_message = turn['messages'][-1]
         logger.info(f"🤖 Agent: {last_message.content}")
        except KeyboardInterrupt:
+        # Ctrl+C 입력 시 스택 트레이스 없이 깔끔하게 종료
         logger.info("\n인터럽트로 종료합니다")
         break
        except Exception as e:
