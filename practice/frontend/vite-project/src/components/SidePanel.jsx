@@ -66,7 +66,6 @@ export default function SidePanel({ posts, fetching, onFetch, onSelectPost, apiU
   const [refreshHovered, setRefreshHovered] = useState(false);
 
   const refreshBtnStyle = {
-    background: 'none',
     border: 'none',
     color: refreshHovered ? 'var(--accent)' : 'var(--muted)',
     cursor: 'pointer',

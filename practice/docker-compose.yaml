@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+
+  # Nginx 리버스 프록시 (외부 트래픽 진입점)
+  nginx:
+    image: nginx:1.28
+    ports:
+      - "6020:80"          # 외부 80 포트만 열면 됨
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+
+  # React 프론트엔드
+  frontend:
+    build:
+      context: ./frontend
+      args:
+      - VITE_API_URL=/api 
+    expose:
+      - "80"             # 내부 통신용 (외부 직접 접근 불가)
+
+  # FastAPI 백엔드
+  backend:
+    build:
+      context: ./backend
+    expose:
+      - "80"           # 내부 통신용 (외부 직접 접근 불가)
+    environment:
+      - DB_HOST=192.168.0.201
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=1234
+      - DB_NAME=hayoung_board
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434  # 호스트 Ollama 접근
+      - OLLAMA_MODEL_NAME=gemma4:e4b
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Linux에서 호스트 접근용

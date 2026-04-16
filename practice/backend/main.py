@@ -83,6 +83,6 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
+        port=80,
         reload=True,   # 개발 중 코드 변경 시 자동 재시작 (운영 시 False로 변경)
     )

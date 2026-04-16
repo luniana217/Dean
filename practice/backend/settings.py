@@ -11,11 +11,12 @@ class Settings(BaseSettings):
   db_password: str = ""
   db_name: str = "hayoung_board"
 
-
-
+  VITE_API_URL: str 
+ 
   model_config = SettingsConfigDict(
     env_file=".env",
     env_file_encoding="utf-8",
+    extra="ignore",
   )
 
 settings = Settings()

@@ -40,7 +40,7 @@ const injectKeyframes = () => {
 
 export default function App() {
   // API URL 상태 (SidePanel 입력창에서 수정 가능)
-  const [apiUrl, setApiUrl] = useState('http://localhost:8000');
+  const [apiUrl, setApiUrl] = useState('/api');
 
   // 채팅 훅 - 메시지 목록, 로딩 상태, 전송 함수
   const { messages, loading, sendMessage } = useChat(apiUrl);

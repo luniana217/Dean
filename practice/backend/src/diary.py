@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 llm = ChatOllama(
   model=settings.ollama_model_name,
   base_url=settings.ollama_base_url,
+  think=False,
 )
 
 

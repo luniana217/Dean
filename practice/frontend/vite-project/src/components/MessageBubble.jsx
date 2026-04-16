@@ -52,7 +52,7 @@ export default function MessageBubble({ role, content, time }) {
   return (
     <div style={wrapStyle}>
       <div style={avatarStyle}>
-        {isUser ? '🧑‍💻' : '🤖'}
+        {isUser ? '🐻' : '🐼'}
       </div>
       <div style={bubbleStyle}>
         {content}
